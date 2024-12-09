@@ -3,10 +3,8 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
         Button buttonSignIn = findViewById(R.id.btn_sign_in);
         EditText etUsername = findViewById(R.id.et_username);
@@ -47,18 +43,15 @@ public class MainActivity extends AppCompatActivity {
 
                 if (enteredInput.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Username/email dan password tidak boleh kosong!", Toast.LENGTH_SHORT).show();
-                }
-                else if ((enteredInput.equals(savedUsername) || enteredInput.equals(savedEmail)) && enteredPassword.equals(savedPassword)) {
+                } else if ((enteredInput.equals(savedUsername) || enteredInput.equals(savedEmail)) && enteredPassword.equals(savedPassword)) {
                     Intent intent = new Intent(MainActivity.this, Profile.class);
                     startActivity(intent);
                     Toast.makeText(MainActivity.this, "Login berhasil!", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Toast.makeText(MainActivity.this, "Username/email atau password salah!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         String signUpText = "Don't have an account yet? Sign Up";
         SpannableString spannableSignUp = new SpannableString(signUpText);

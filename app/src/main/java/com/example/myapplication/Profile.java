@@ -3,11 +3,12 @@ package com.example.myapplication;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
@@ -48,11 +49,9 @@ public class Profile extends AppCompatActivity {
         long phone = userDataPrefs.getLong("phone", 0);
         String about = userDataPrefs.getString("about", "About not set");
         String gender = userDataPrefs.getString("gender", "Gender not set");
-        String experience = userDataPrefs.getString("Experienced", "Experience not set");
-
-        SharedPreferences userPrefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String username = userPrefs.getString("username", "Username not set");
-        String email = userPrefs.getString("email", "Email not set");
+        String experience = userDataPrefs.getString("experience", "Experience not set");
+        String username = userDataPrefs.getString("username", "Username not set");
+        String email = userDataPrefs.getString("email", "Email not set");
 
         tvNameValue.setText(name);
         tvAgeValue.setText((age > 0 ? age + " y/o" : "Age not set"));
@@ -62,15 +61,13 @@ public class Profile extends AppCompatActivity {
         tvAboutValue.setText(about);
         tvGenderValue.setText(gender);
         tvExperienceValue.setText(experience);
-
         tvUsernameValue.setText(username);
         tvEmailValue.setText(email);
 
         try {
-            String profileImageUri = userDataPrefs.getString("profileImageUri", "");
+            String profileImageUri = userDataPrefs.getString("profileImageUri_" + username, null);
             if (profileImageUri != null && !profileImageUri.isEmpty()) {
                 Uri imageUri = Uri.parse(profileImageUri);
-
                 Glide.with(this)
                         .load(imageUri)
                         .transform(new CircleCrop())

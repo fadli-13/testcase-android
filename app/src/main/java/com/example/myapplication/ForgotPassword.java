@@ -25,7 +25,7 @@ public class ForgotPassword extends AppCompatActivity {
         EditText etOldPassword = findViewById(R.id.et_old_password);
         EditText etNewPassword = findViewById(R.id.et_new_password);
 
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
         buttonChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override

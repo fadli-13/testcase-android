@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="edit_text_disabled">#8C8383</color>
+    <color name="edit_text_enabled">#33FFFFFF</color>
+
 </resources>

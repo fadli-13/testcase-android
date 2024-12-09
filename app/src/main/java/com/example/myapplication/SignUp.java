@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SignUp extends AppCompatActivity {
@@ -24,7 +23,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
 
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
         Button buttonSignUp = findViewById(R.id.btn_sign_up);
         EditText etUsername = findViewById(R.id.et_username);
@@ -42,18 +41,15 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(SignUp.this, "Username tidak boleh kosong!", Toast.LENGTH_SHORT).show();
                 } else if (!isValidUsername(username)) {
                     Toast.makeText(SignUp.this, "Username harus 5-15 karakter dan mengandung huruf dan angka!", Toast.LENGTH_SHORT).show();
-                }
-                else if (email.isEmpty()) {
+                } else if (email.isEmpty()) {
                     Toast.makeText(SignUp.this, "Email tidak boleh kosong!", Toast.LENGTH_SHORT).show();
                 } else if (!isValidEmail(email)) {
                     Toast.makeText(SignUp.this, "Email harus mengandung '@' dan diakhiri dengan '.com'!", Toast.LENGTH_SHORT).show();
-                }
-                else if (password.isEmpty()) {
+                } else if (password.isEmpty()) {
                     Toast.makeText(SignUp.this, "Password tidak boleh kosong!", Toast.LENGTH_SHORT).show();
                 } else if (!isValidPassword(password)) {
                     Toast.makeText(SignUp.this, "Password harus 8-25 karakter, mengandung huruf, angka, dan diawali huruf besar!", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("username", username);
                     editor.putString("email", email);
@@ -101,5 +97,5 @@ public class SignUp extends AppCompatActivity {
                 password.length() <= 25 &&
                 password.matches("^[A-Z][A-Za-z\\d]+$") &&
                 password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$");
-    }}
-
+    }
+}

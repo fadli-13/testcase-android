@@ -45,7 +45,6 @@ public class DataDiri extends AppCompatActivity {
         EditText etMoreYear = findViewById(R.id.et_more_year);
 
         circularImageButton = findViewById(R.id.circular_image);
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
         sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
@@ -57,10 +56,14 @@ public class DataDiri extends AppCompatActivity {
                 etLessYear.setEnabled(true);
                 etMoreYear.setEnabled(false);
                 etMoreYear.setText("");
+                etLessYear.setBackgroundTintList(getResources().getColorStateList(R.color.edit_text_enabled));
+                etMoreYear.setBackgroundTintList(getResources().getColorStateList(R.color.edit_text_disabled));
             } else if (checkedId == R.id.rb_more_year) {
                 etMoreYear.setEnabled(true);
                 etLessYear.setEnabled(false);
                 etLessYear.setText("");
+                etMoreYear.setBackgroundTintList(getResources().getColorStateList(R.color.edit_text_enabled));
+                etLessYear.setBackgroundTintList(getResources().getColorStateList(R.color.edit_text_disabled));
             }
         });
 
@@ -129,38 +132,44 @@ public class DataDiri extends AppCompatActivity {
                 return;
             }
 
-            try {
-                int age = Integer.parseInt(ageStr);
-                int weight = Integer.parseInt(weightStr);
-                int height = Integer.parseInt(heightStr);
-                long phone = Long.parseLong(phoneStr);
-                int lessYear = lessYearStr.isEmpty() ? 0 : Integer.parseInt(lessYearStr);
-                int moreYear = moreYearStr.isEmpty() ? 0 : Integer.parseInt(moreYearStr);
+            int age = Integer.parseInt(ageStr);
+            int weight = Integer.parseInt(weightStr);
+            int height = Integer.parseInt(heightStr);
+            long phone = Long.parseLong(phoneStr);
+            int lessYear = lessYearStr.isEmpty() ? 0 : Integer.parseInt(lessYearStr);
+            int moreYear = moreYearStr.isEmpty() ? 0 : Integer.parseInt(moreYearStr);
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("name", name);
-                editor.putInt("age", age);
-                editor.putInt("weight", weight);
-                editor.putInt("height", height);
-                editor.putLong("phone", phone);
-                editor.putString("about", about);
-                editor.putString("gender", gender);
-                if (rbLessYear.isChecked()) {
-                    editor.putString("Experienced", lessYear + " months");
-                } else if (rbMoreYear.isChecked()) {
-                    editor.putString("Experienced", moreYear + " years");
-                }
-                editor.apply();
-
-
-                Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(DataDiri.this, Profile.class);
-                startActivity(intent);
-
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Pastikan umur, berat, tinggi, dan nomor telepon adalah angka valid!", Toast.LENGTH_SHORT).show();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("name", name);
+            editor.putInt("age", age);
+            editor.putInt("weight", weight);
+            editor.putInt("height", height);
+            editor.putLong("phone", phone);
+            editor.putString("about", about);
+            editor.putString("gender", gender);
+            if (rbLessYear.isChecked()) {
+                editor.putString("Experienced", lessYear + " months");
+            } else if (rbMoreYear.isChecked()) {
+                editor.putString("Experienced", moreYear + " years");
             }
+            editor.apply();
+
+            editor.putString("activeUser", name);
+            editor.apply();
+
+            if (imageUri != null) {
+                String username = sharedPreferences.getString("activeUser", null);
+                if (username != null) {
+                    SharedPreferences.Editor imgEditor = sharedPreferences.edit();
+                    imgEditor.putString("profileImageUri_" + username, imageUri.toString());
+                    imgEditor.apply();
+                }
+            }
+
+            Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(DataDiri.this, Profile.class);
+            startActivity(intent);
         });
     }
 
@@ -179,14 +188,19 @@ public class DataDiri extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
             if (imageUri != null) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("profileImageUri", imageUri.toString());
-                editor.apply();
+                String username = sharedPreferences.getString("activeUser", null);
+                if (username != null) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("profileImageUri_" + username, imageUri.toString());
+                    editor.apply();
 
-                Glide.with(this)
-                        .load(imageUri)
-                        .transform(new CircleCrop())  // Make it circular
-                        .into(circularImageButton);
+                    Glide.with(this)
+                            .load(imageUri)
+                            .transform(new CircleCrop())
+                            .into(circularImageButton);
+                } else {
+                    Toast.makeText(this, "Gagal menyimpan gambar. Username tidak ditemukan.", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this, "Gagal memuat gambar.", Toast.LENGTH_SHORT).show();
             }
@@ -194,13 +208,16 @@ public class DataDiri extends AppCompatActivity {
     }
 
     private void loadProfileImage() {
-        String savedImageUri = sharedPreferences.getString("profileImageUri", null);
-        if (savedImageUri != null) {
-            imageUri = Uri.parse(savedImageUri);
-            Glide.with(this)
-                    .load(imageUri)
-                    .transform(new CircleCrop())  // Make it circular
-                    .into(circularImageButton);
+        String username = sharedPreferences.getString("activeUser", null);
+        if (username != null) {
+            String savedImageUri = sharedPreferences.getString("profileImageUri_" + username, null);
+            if (savedImageUri != null) {
+                Uri savedUri = Uri.parse(savedImageUri);
+                Glide.with(this)
+                        .load(savedUri)
+                        .transform(new CircleCrop())
+                        .into(circularImageButton);
+            }
         }
     }
 }

@@ -68,9 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             app:endIconMode="password_toggle"
-            android:textColorHint="#80FFFFFF"
             app:endIconTint="#FFFFFF"
             android:textSize="20sp"
+            app:hintEnabled="false"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -78,6 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_corner"
+                android:textColorHint="#80FFFFFF"
+                android:textColor="@color/white"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:padding="18dp"
